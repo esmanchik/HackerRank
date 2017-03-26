@@ -83,7 +83,40 @@ public:
 };
 
 
+#include <unordered_map>
+
+using map = unordered_map<char,int>;
+using predicate = function<bool (const string &)>;
+
+void permute(string s, map count, string perm/*, predicate pred*/) {
+		map::iterator it;	
+		for(it = count.begin(); it != count.end(); it++) {
+			if(it->second > 0) {
+				count[it->first]--;
+				if(s.size() - perm.size() == 1) {
+					// Permutation is complete
+                    //if (!pred(perm + it->first)) break;
+					cout<<perm + it->first<<"\n";
+				} else {
+					permute(s, count, perm + it->first);
+				}
+				count[it->first]++;
+			}
+		}
+}
+
+void printPermutations(string s) {
+	// Count the number of times each letter appears in the string
+	unordered_map<char,int> count; // count['a'] -> # of times 'a' appears in s
+	for(int i = 0; i < s.size(); i++) {
+		count[s[i]]++;
+	}
+	permute(s, count, "");
+}
+
 int main() {
+    printPermutations("cba");
+
     using perm = permutator<int>;
     perm::array a = {1, 2, 3, 4};
     perm::permute_while(a, [](const perm::array & a) {
